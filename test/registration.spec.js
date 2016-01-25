@@ -1,12 +1,23 @@
 var Registration = require('../libs/registration');
+var mongoose = require('mongoose');
 
 describe('Registration', function() {
-
-    var regResult = {};
-
+    var reg = {};
+    before(function(done) {
+        var db = mongoose.connect('mongodb://admin:admin@ds049935.mongolab.com:49935/membership');
+        reg = new Registration(db);
+        done();
+    });
     describe('a valid application', function() {
-        before(function() {
-            regResult = Registration.applyForMembership({email: 'test-user@email.com', password: 'pass-word', confirm: 'pass-word'});
+        var regResult = {};
+        before(function(done) {
+            reg.applyForMembership(
+                {email: 'test-user@email.com', password: 'pass-word', confirm: 'pass-word'},
+                function(err, result) {
+                    regResult = result;
+                    done();
+                }
+            );
         });
         it('is successful', function() {
             regResult.success.should.equal(true);
