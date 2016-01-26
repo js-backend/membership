@@ -3,6 +3,8 @@ var Application = require('../models/application');
 var mongoose = require('mongoose');
 var assert = require('assert');
 var UserModel = require('../models/userModel');
+var bCrypt = require('bcrypt-nodejs');
+var Log = require('../models/log');
 
 var RegResult = function() {
     var result = {
@@ -34,6 +36,19 @@ var Registration  = function(db) {
         });
     };
 
+    var saveUser = function(user, next) {
+        var userDb = new UserModel(user);
+        db.users.save(user, next);
+    };
+
+    var addLogEntry = function(user, next) {
+        var log = new Log({
+            subject: 'Registration',
+            userId: user.id,
+            entry: 'Successfully Registered'
+        }, next);
+    };
+
 // var args = {email: 'email@mail.com', password: 'password'}
     var applyForMembership = function(args, next) {
         var regResult = new RegResult;
@@ -48,16 +63,25 @@ var Registration  = function(db) {
             assert.ok(err === null, err);
             if (!exists) {
                 // create a new user
+                var user = new User(app);
+
                 // hash a password
-                // create log entry
-                regResult.success = true;
-                regResult.message = 'Welcome!';
+                user.hashedPassword = bCrypt.hashSync(app.password);
 
-                regResult.user = new User(args);
+                // save user
+                saveUser(user, function(err, newUser) {
+                    assert.ok(err === null, err);
+                    regResult.user = newUser;
+                    // create log entry
+                    addLogEntry(newUser, function(err, newLog) {
+                        regResult.log = newLog;
+                        regResult.success = true;
+                        regResult.message = 'Welcome!';
+                        next(null, regResult);
+                    });
+                });
             }
-            next(null, regResult);
         });
-
     };
 
     return {
