@@ -13,6 +13,8 @@
     "gulp": "^3.9.0",
     "mocha": "^2.3.4",
     "mongoose": "^4.3.7",
+    "rethinkdb": "^2.2.1",
+    "secondthought": "git+ssh://git@github.com/mazhekin/second-thought.git",
     "should": "^8.1.1"
   }
 }
