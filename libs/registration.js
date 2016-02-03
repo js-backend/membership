@@ -1,8 +1,7 @@
 var User = require('../models/user');
 var Application = require('../models/application');
-var mongoose = require('mongoose');
+var db = require('secondthought');
 var assert = require('assert');
-var UserModel = require('../models/userModel');
 var bCrypt = require('bcrypt-nodejs');
 var Log = require('../models/log');
 
@@ -29,15 +28,10 @@ var Registration  = function(db) {
     };
 
     var checkIfUserExists = function(app, next) {
-        UserModel.findOne({email: app.email}, function(err, user) {
-            if (err)
-                next(err, null);
-            next(null, user !== null);
-        });
+        db.users.exists({email: app.email}, next);
     };
 
     var saveUser = function(user, next) {
-        var userDb = new UserModel(user);
         db.users.save(user, next);
     };
 
@@ -46,7 +40,8 @@ var Registration  = function(db) {
             subject: 'Registration',
             userId: user.id,
             entry: 'Successfully Registered'
-        }, next);
+        });
+        db.logs.save(log, next);
     };
 
 // var args = {email: 'email@mail.com', password: 'password'}
@@ -64,11 +59,12 @@ var Registration  = function(db) {
             if (!exists) {
                 // create a new user
                 var user = new User(app);
+                user.status = 'approved';
+                user.signInCount = 1;
 
                 // hash a password
                 user.hashedPassword = bCrypt.hashSync(app.password);
 
-                // save user
                 saveUser(user, function(err, newUser) {
                     assert.ok(err === null, err);
                     regResult.user = newUser;

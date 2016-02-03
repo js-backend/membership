@@ -1,23 +1,27 @@
 var Registration = require('../libs/registration');
-var mongoose = require('mongoose');
+var db = require('secondthought');
+var config = require('../config');
 
 describe('Registration', function() {
     var reg = {};
     before(function(done) {
-        var db = mongoose.connect('mongodb://admin:admin@ds049935.mongolab.com:49935/membership');
-        reg = new Registration(db);
-        done();
+        db.connect(config.connectData, function(err, db) {
+            reg = new Registration(db);
+            done();
+        });
     });
     describe('a valid application', function() {
         var regResult = {};
         before(function(done) {
-            reg.applyForMembership(
-                {email: 'test-user@email.com', password: 'pass-word', confirm: 'pass-word'},
-                function(err, result) {
-                    regResult = result;
-                    done();
-                }
-            );
+            db.users.destroyAll(function(err, result) {
+                reg.applyForMembership(
+                    {email: 'test-user@email.com', password: 'pass-word', confirm: 'pass-word'},
+                    function(err, result) {
+                        regResult = result;
+                        done();
+                    }
+                );
+            });
         });
         it('is successful', function() {
             regResult.success.should.equal(true);
@@ -25,9 +29,18 @@ describe('Registration', function() {
         it('creates a user', function() {
             regResult.user.should.be.defined;
         });
-        it('creates a log entry');
-        it('sets the user status to approved');
-        it('offers a welcome message');
+        it('creates a log entry', function() {
+            regResult.log.should.be.defined;
+        });
+        it('sets the user status to approved', function() {
+            regResult.user.status.should.equal('approved');
+        });
+        it('offers a welcome message', function() {
+            regResult.message.should.equal('Welcome!');
+        });
+        it('increments the signInCount', function() {
+            regResult.user.signInCount.should.equal(1);
+        });
     });
 
     describe('an empty or null email', function() {
