@@ -4,17 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha -w"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
-    "gulp": "^3.9.0",
-    "mocha": "^2.3.4",
-    "mongoose": "^4.3.7",
     "rethinkdb": "^2.2.1",
-    "secondthought": "git+ssh://git@github.com/mazhekin/second-thought.git",
-    "should": "^8.1.1"
+    "secondthought": "https://github.com/mazhekin/second-thought.git"
+  },
+  "devDependencies": {
+    "should": "^8.1.1",
+    "mocha": "^2.3.4",
+    "gulp": "^3.9.0"
   }
 }
