@@ -42,7 +42,7 @@ describe('Registration', function() {
             regResult.user.signInCount.should.equal(1);
         });
     });
-
+/*
     describe('an empty or null email', function() {
         it('is not successful');
         it('tells user that email is required');
@@ -61,5 +61,5 @@ describe('Registration', function() {
     describe('email already exists', function() {
         it('is not successful');
         it('tells user that email already exists');
-    });
+    });*/
 });
