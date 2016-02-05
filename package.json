@@ -6,6 +6,10 @@
   "scripts": {
     "test": "node_modules/.bin/mocha -w"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mazhekin/membership.git"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
