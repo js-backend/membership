@@ -51,6 +51,7 @@ var Registration  = function(db) {
         var user = new User(app);
         user.status = 'approved';
         user.signInCount = 1;
+        user.hashedPassword = bCrypt.hashSync(app.password);
         db.users.save(user, function(err, newUser) {
             assert.ok(err === null, err);
             app.user = newUser;

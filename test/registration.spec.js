@@ -15,7 +15,7 @@ describe('Registration', function() {
         before(function(done) {
             db.users.destroyAll(function(err, result) {
                 reg.applyForMembership(
-                    {email: 'test-user@email.com', password: 'pass-word', confirm: 'pass-word'},
+                    {email: 'reg-test@test.com', password: 'password', confirm: 'password'},
                     function(err, result) {
                         regResult = result;
                         done();
@@ -42,7 +42,7 @@ describe('Registration', function() {
             regResult.user.signInCount.should.equal(1);
         });
     });
-/*
+
     describe('an empty or null email', function() {
         it('is not successful');
         it('tells user that email is required');
@@ -61,5 +61,5 @@ describe('Registration', function() {
     describe('email already exists', function() {
         it('is not successful');
         it('tells user that email already exists');
-    });*/
+    });
 });
