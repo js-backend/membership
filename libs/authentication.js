@@ -87,18 +87,14 @@ var Authentication = function (db, next) {
         authResult.message = 'Welcome!';
         self.emit('authenticated', authResult);
         self.emit('completed', authResult);
-        if (continueWith) {
-            continueWith(null, authResult);
-        }
+        continueWith && continueWith(null, authResult);
     };
 
     var authNotOk = function(authResult) {
         authResult.success = false;
         self.emit('not-authenticated', authResult);
         self.emit('completed', authResult);
-        if (continueWith) {
-            continueWith(null, authResult);
-        }
+        continueWith && continueWith(null, authResult);
     };
 
     // happy path

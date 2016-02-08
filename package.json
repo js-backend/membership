@@ -1,6 +1,6 @@
 {
   "name": "membership",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
-    "rethinkdb": "^2.2.1",
     "secondthought": "https://github.com/mazhekin/second-thought.git"
   },
   "devDependencies": {

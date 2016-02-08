@@ -1,6 +1,6 @@
 var Registration = require('../libs/registration');
 var db = require('secondthought');
-var config = require('../config');
+var config = require('./config');
 assert = require('assert');
 var Authentication = require('../libs/authentication');
 var should = require('should');
