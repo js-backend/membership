@@ -13,9 +13,10 @@ describe('User', function() {
         it('email is test-user@mail.com', function() {
             user.email.should.equal('test-user@mail.com');
         });
+        /* not used
         it('has an authentication token', function() {
             user.authenticationToken.should.be.defined;
-        });
+        });*/
         it('has a pending status', function() {
             user.status.should.equal('pending')
         });
@@ -28,9 +29,10 @@ describe('User', function() {
         it('has lastLogin', function() {
             user.lastLoginAt.should.be.defined;
         });
+        /* excluded
         it('has currentLogin', function() {
             user.currentLoginAt.should.be.defined;
-        });
+        });*/
         /*it('has a sessionToken', function() {
             user.currentSessionToken.should.equal(null);
         });

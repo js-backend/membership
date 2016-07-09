@@ -1,9 +1,7 @@
 
 var config = {
-    connectData: {
-        host: 'ec2-52-28-64-17.eu-central-1.compute.amazonaws.com',
-        port: 28015,
-        db: 'membership'
+    storage: {
+        database: 'mongodb://wasya:123@ds019123.mlab.com:19123/apigee-api'
     }
 };
 

@@ -1,19 +1,28 @@
+var mongoose = require('mongoose');
 var Registration = require('../libs/registration');
-var db = require('secondthought');
+//var db = require('secondthought');
 var config = require('./config');
+var UserModel = require('../schemas/user');
+
 
 describe('Registration', function() {
     var reg = {};
     before(function(done) {
-        db.connect(config.connectData, function(err, db) {
-            reg = new Registration(db);
-            done();
+        mongoose.connect(config.storage.database, function (err, res) {
+            if (err) {
+                console.log ('ERROR connecting to: ' + config.storage.database + '. ' + err);
+            } else {
+                console.log ('Succeeded connected to: ' + config.storage.database);
+                reg = new Registration();
+                done();
+            }
         });
     });
+
     describe('a valid application', function() {
         var regResult = {};
         before(function(done) {
-            db.users.destroyAll(function(err, result) {
+            UserModel.remove({}, function () {
                 reg.applyForMembership(
                     {email: 'reg-test@test.com', password: 'password', confirm: 'password'},
                     function(err, result) {
@@ -44,22 +53,88 @@ describe('Registration', function() {
     });
 
     describe('an empty or null email', function() {
-        it('is not successful');
-        it('tells user that email is required');
+        var regResult = {};
+        before(function(done) {
+            UserModel.remove({}, function () {
+                reg.applyForMembership(
+                    {email: '', password: 'password', confirm: 'password'},
+                    function(err, result) {
+                        regResult = result;
+                        done();
+                    }
+                );
+            });
+        });
+        it('is not successful', function () {
+            regResult.success.should.equal(false);
+        });
+        it('tells user that email is required', function () {
+            regResult.message.should.equal('Email and password are required');
+        });
     });
 
     describe('empty or null password', function() {
-        it('is not successful');
-        it('tells user that password is required');
+        var regResult = {};
+        before(function(done) {
+            UserModel.remove({}, function () {
+                reg.applyForMembership(
+                    {email: 'reg-test@test.com', password: '', confirm: ''},
+                    function(err, result) {
+                        regResult = result;
+                        done();
+                    }
+                );
+            });
+        });
+        it('is not successful', function() {
+            regResult.success.should.equal(false);
+        });
+        it('tells user that password is required', function() {
+            regResult.message.should.equal('Email and password are required');
+        });
     });
 
     describe('password and confirm mismatch', function() {
-        it('is not successful');
-        it('tells user that passwords do not match');
+        var regResult = {};
+        before(function(done) {
+            UserModel.remove({}, function () {
+                reg.applyForMembership(
+                    {email: 'reg-test@test.com', password: 'password1', confirm: 'password2'},
+                    function(err, result) {
+                        regResult = result;
+                        done();
+                    }
+                );
+            });
+        });
+        it('is not successful', function() {
+            regResult.success.should.equal(false);
+        });
+        it('tells user that passwords do not match', function() {
+            regResult.message.should.equal('Passwords do not match');
+        });
     });
 
     describe('email already exists', function() {
-        it('is not successful');
-        it('tells user that email already exists');
+        var regResult = {};
+        before(function(done) {
+            UserModel.remove({}, function () {
+                var credentials = {email: 'reg-test@test.com', password: 'password', confirm: 'password'};
+                reg.applyForMembership(credentials,
+                    function() {
+                        reg.applyForMembership(credentials, function(err, result) {
+                            regResult = result;
+                            done();
+                        });
+                    }
+                );
+            });
+        });
+        it('is not successful', function()  {
+            regResult.success.should.equal(false);
+        });
+        it('tells user that email already exists', function()  {
+            regResult.message.should.equal('This email already exists');
+        });
     });
 });

@@ -1,6 +1,7 @@
 var User = require('../models/user');
+var UserSchema = require('../schemas/user');
 var Application = require('../models/application');
-var db = require('secondthought');
+//var db = require('secondthought');
 var assert = require('assert');
 var bCrypt = require('bcrypt-nodejs');
 var Log = require('../models/log');
@@ -36,7 +37,16 @@ var Registration  = function(db) {
     };
 
     var checkIfUserExists = function(app) {
-        db.users.exists({email: app.email}, function(err, exists) {
+        UserSchema.find({email: app.email}, function(err, docs) {
+            assert.ok(err === null, err);
+            if (docs.length) {
+                app.setInvalid('This email already exists');
+                self.emit('invalid', app);
+            } else {
+                self.emit('user-does-not-exists', app);
+            }
+        });
+        /*db.users.exists({email: app.email}, function(err, exists) {
             assert.ok(err === null, err);
             if (exists) {
                 app.setInvalid('This email already exists');
@@ -44,7 +54,7 @@ var Registration  = function(db) {
             } else {
                 self.emit('user-does-not-exists', app);
             }
-        });
+        });*/
     };
 
     var createUser = function(app) {
@@ -52,11 +62,18 @@ var Registration  = function(db) {
         user.status = 'approved';
         user.signInCount = 1;
         user.hashedPassword = bCrypt.hashSync(app.password);
-        db.users.save(user, function(err, newUser) {
+
+        // save the sample use
+        user.save(function(err, newUser) {
             assert.ok(err === null, err);
             app.user = newUser;
             self.emit('user-created', app);
         });
+        /*db.users.save(user, function(err, newUser) {
+            assert.ok(err === null, err);
+            app.user = newUser;
+            self.emit('user-created', app);
+        });*/
     };
 
     var addLogEntry = function(app) {
@@ -65,10 +82,15 @@ var Registration  = function(db) {
             userId: app.user.id,
             entry: 'Successfully Registered'
         });
-        db.logs.save(log, function(err, newLog) {
+        log.save(function(err, newLog){
+            assert.ok(err === null, err);
             app.log = newLog;
             self.emit('log-created', app);
         });
+        /*db.logs.save(log, function(err, newLog) {
+            app.log = newLog;
+            self.emit('log-created', app);
+        });*/
     };
 
 // var args = {email: 'email@mail.com', password: 'password'}

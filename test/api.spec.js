@@ -1,4 +1,4 @@
-var db = require('secondthought');
+/*var db = require('secondthought');
 var config = require('./config');
 var Membership = require('../index');
 var should = require('should');
@@ -39,3 +39,4 @@ describe('Main API', function() {
         });
     });
 });
+*/
