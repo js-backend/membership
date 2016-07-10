@@ -1,14 +1,16 @@
-/*var db = require('secondthought');
+var db = require('secondthought');
 var config = require('./config');
 var Membership = require('../index');
 var should = require('should');
+var TestHelper = require('./test-helper');
+var UserModel = require('../schemas/user');
 
 describe('Main API', function() {
     var membership = {};
     before(function(done) {
-        membership = new Membership(config.connectData);
-        db.connect(config.connectData, function(err, db) {
-            db.users.destroyAll(function(err, result) {
+        membership = new Membership(config.storage.database);
+        TestHelper.connectDb(config.storage.database, function() {
+            TestHelper.deleteAllUsers(function () {
                 done();
             });
         });
@@ -31,12 +33,11 @@ describe('Main API', function() {
             });
         });
 
-        it('gets by token', function(done) {
+        /*it('gets by token', function(done) {
             membership.findUserByToken(newUser.authenticationToken, function(err, result) {
                 result.should.be.defined;
                 done();
             });
-        });
+        });*/
     });
 });
-*/

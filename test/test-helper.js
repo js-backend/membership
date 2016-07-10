@@ -16,8 +16,13 @@ var TestHelper = function () {
         });
     };
 
+    var deleteAllUsers = function (done) {
+        UserModel.remove({}, done)
+    };
+
     return {
-        connectDb: connectDb
+        connectDb: connectDb,
+        deleteAllUsers: deleteAllUsers
     }
 };
 

@@ -1,4 +1,3 @@
-var mongoose = require('mongoose');
 var Registration = require('../libs/registration');
 var TestHelper = require('./test-helper');
 var config = require('./config');

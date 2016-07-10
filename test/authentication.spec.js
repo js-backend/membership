@@ -1,35 +1,27 @@
 var Registration = require('../libs/registration');
-var mongoose = require('mongoose');
 var config = require('./config');
 assert = require('assert');
 var Authentication = require('../libs/authentication');
 var should = require('should');
 UserModel = require('../schemas/user');
+TestHelper = require('./test-helper');
 
 describe('Authentication', function() {
 
     var reg = {};
     var auth = {};
     before(function(done) {
-        if (mongoose.connection.readyState==1) {
-            done();
-        }
-        mongoose.connect(config.storage.database, function (err, res) {
-            if (err) {
-                console.log ('ERROR connecting to: ' + config.storage.database + '. ' + err);
-            } else {
-                console.log ('Succeeded connected to: ' + config.storage.database);
-                reg = new Registration();
-                auth = new Authentication();
-                UserModel.remove({}, function () {
-                    reg.applyForMembership({email: 'test@test.com', password: 'password', confirm: 'password'},
-                        function(err, regResult) {
-                            assert.ok(regResult.success);
-                            done();
-                        }
-                    );
-                });
-            }
+        TestHelper.connectDb(config.storage.database, function() {
+            reg = new Registration();
+            auth = new Authentication();
+            UserModel.remove({}, function () {
+                reg.applyForMembership({email: 'test@test.com', password: 'password', confirm: 'password'},
+                    function(err, regResult) {
+                        assert.ok(regResult.success);
+                        done();
+                    }
+                );
+            });
         });
     });
 
