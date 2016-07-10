@@ -1,9 +1,6 @@
-var db = require('secondthought');
 var config = require('./config');
 var Membership = require('../index');
-var should = require('should');
 var TestHelper = require('./test-helper');
-var UserModel = require('../schemas/user');
 
 describe('Main API', function() {
     var membership = {};

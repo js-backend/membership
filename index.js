@@ -34,16 +34,6 @@ var Membership = function (connectData) {
             });
             auth.authenticate({email: email, password: password}, next);
         });
-        /*db.connect(connectData, function(err, db) {
-            var auth = new Authentication(db);
-            self.on('authenticated', function(authResult) {
-                self.emit('authenticated', authResult);
-            });
-            self.on('not-authenticated', function(authResult) {
-                self.emit('not-authenticated', authResult);
-            });
-            auth.authenticate({email: email, password: password}, next);
-        });*/
     };
 
     var register = function(email, password, confirm, next) {
@@ -57,16 +47,6 @@ var Membership = function (connectData) {
             });
             reg.applyForMembership({email: email, password: password, confirm: confirm}, next);
         });
-        /*db.connect(connectData, function(err, db) {
-            var reg = new Registration(db);
-            self.on('registered', function(regResult) {
-                self.emit('registered', regResult);
-            });
-            self.on('not-registered', function(regResult) {
-                self.emit('not-registered', regResult);
-            });
-            reg.applyForMembership({email: email, password: password, confirm: confirm}, next);
-        });*/
     };
 
     var findUserByToken = function(token, next) {
@@ -74,10 +54,6 @@ var Membership = function (connectData) {
             assert.ok(err === null, err);
             UserModel.findOne({authenticationToken: token}, next);
         });
-        /*db.connect(connectData, function(err, db) {
-            assert.ok(err === null, err);
-            db.users.first({authenticationToken: token}, next);
-        });*/
     };
 
     return {

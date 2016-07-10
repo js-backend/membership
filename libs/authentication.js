@@ -40,15 +40,6 @@ var Authentication = function () {
                 self.emit('invalid', authResult);
             }
         });
-        /*db.users.first({email: authResult.credentials.email}, function(err, foundUser) {
-            assert.ok(err === null, err);
-            if (foundUser) {
-                authResult.user = new User(foundUser);
-                self.emit('user-found', authResult);
-            } else {
-                self.emit('invalid', authResult);
-            }
-        });*/
     };
 
     var comparePassword = function(authResult) {
@@ -77,11 +68,6 @@ var Authentication = function () {
             assert.ok(err === null, err);
             self.emit('stats-updated', authResult);
         });
-
-        /*db.users.updateOnly(updates, user.id, function(err, updates) {
-            assert.ok(err === null, err);
-            self.emit('stats-updated', authResult);
-        });*/
     };
 
     var createLog = function(authResult) {
