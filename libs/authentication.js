@@ -4,6 +4,7 @@ var assert = require('assert');
 var bCrypt = require('bcrypt-nodejs');
 var User = require('../models/user');
 var Log = require('../models/log');
+var UserModel = require('../schemas/user');
 
 var AuthResult = function(credentials) {
     var result = {
@@ -16,7 +17,7 @@ var AuthResult = function(credentials) {
     return result;
 };
 
-var Authentication = function (db, next) {
+var Authentication = function () {
     var self = this;
     var continueWith = null;
     events.EventEmitter.call(this);
@@ -30,7 +31,16 @@ var Authentication = function (db, next) {
     };
 
     var findUser = function(authResult) {
-        db.users.first({email: authResult.credentials.email}, function(err, foundUser) {
+        UserModel.findOne({email: authResult.credentials.email}, function (err, foundUser) {
+            assert.ok(err === null, err);
+            if (foundUser) {
+                authResult.user = foundUser;
+                self.emit('user-found', authResult);
+            } else {
+                self.emit('invalid', authResult);
+            }
+        });
+        /*db.users.first({email: authResult.credentials.email}, function(err, foundUser) {
             assert.ok(err === null, err);
             if (foundUser) {
                 authResult.user = new User(foundUser);
@@ -38,7 +48,7 @@ var Authentication = function (db, next) {
             } else {
                 self.emit('invalid', authResult);
             }
-        });
+        });*/
     };
 
     var comparePassword = function(authResult) {
@@ -53,8 +63,8 @@ var Authentication = function (db, next) {
     var updateUserStats = function(authResult) {
         var user = authResult.user;
         user.signInCount += 1;
-        user.lastLoginAt = user.currentLoginAt;
-        user.currentLoginAt = new Date();
+        user.lastLoginAt = new Date(); //user.currentLoginAt;
+        //user.currentLoginAt = new Date();
 
         // now save them
         var updates = {
@@ -63,20 +73,24 @@ var Authentication = function (db, next) {
             currentLoginAt: user.currentLoginAt
         };
 
-        db.users.updateOnly(updates, user.id, function(err, updates) {
+        UserModel.update({id: user.id}, {$set: updates}, function (err) {
             assert.ok(err === null, err);
             self.emit('stats-updated', authResult);
         });
+
+        /*db.users.updateOnly(updates, user.id, function(err, updates) {
+            assert.ok(err === null, err);
+            self.emit('stats-updated', authResult);
+        });*/
     };
 
     var createLog = function(authResult) {
         var log = new Log({
-            subject: 'Authentication',
+            subject: 'Registration',
             userId: authResult.user.id,
-            entry: 'Successfully logged in'
+            entry: 'Successfully Registered'
         });
-
-        db.logs.save(log, function(err, newLog) {
+        log.save(log, function(err, newLog) {
             authResult.log = newLog;
             self.emit('log-created', authResult);
         });

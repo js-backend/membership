@@ -1,7 +1,6 @@
 var User = require('../models/user');
 var UserSchema = require('../schemas/user');
 var Application = require('../models/application');
-//var db = require('secondthought');
 var assert = require('assert');
 var bCrypt = require('bcrypt-nodejs');
 var Log = require('../models/log');
@@ -17,7 +16,7 @@ var RegResult = function() {
     return result;
 };
 
-var Registration  = function(db) {
+var Registration  = function() {
 
     Emitter.call(this);
     var self = this;
@@ -46,15 +45,6 @@ var Registration  = function(db) {
                 self.emit('user-does-not-exists', app);
             }
         });
-        /*db.users.exists({email: app.email}, function(err, exists) {
-            assert.ok(err === null, err);
-            if (exists) {
-                app.setInvalid('This email already exists');
-                self.emit('invalid', app);
-            } else {
-                self.emit('user-does-not-exists', app);
-            }
-        });*/
     };
 
     var createUser = function(app) {
@@ -69,11 +59,6 @@ var Registration  = function(db) {
             app.user = newUser;
             self.emit('user-created', app);
         });
-        /*db.users.save(user, function(err, newUser) {
-            assert.ok(err === null, err);
-            app.user = newUser;
-            self.emit('user-created', app);
-        });*/
     };
 
     var addLogEntry = function(app) {
@@ -87,10 +72,6 @@ var Registration  = function(db) {
             app.log = newLog;
             self.emit('log-created', app);
         });
-        /*db.logs.save(log, function(err, newLog) {
-            app.log = newLog;
-            self.emit('log-created', app);
-        });*/
     };
 
 // var args = {email: 'email@mail.com', password: 'password'}

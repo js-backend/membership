@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Registration = require('../libs/registration');
-//var db = require('secondthought');
+var TestHelper = require('./test-helper');
 var config = require('./config');
 var UserModel = require('../schemas/user');
 
@@ -8,14 +8,9 @@ var UserModel = require('../schemas/user');
 describe('Registration', function() {
     var reg = {};
     before(function(done) {
-        mongoose.connect(config.storage.database, function (err, res) {
-            if (err) {
-                console.log ('ERROR connecting to: ' + config.storage.database + '. ' + err);
-            } else {
-                console.log ('Succeeded connected to: ' + config.storage.database);
-                reg = new Registration();
-                done();
-            }
+        TestHelper.connectDb(config.storage.database, function() {
+            reg = new Registration();
+            done();
         });
     });
 

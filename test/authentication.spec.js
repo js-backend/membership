@@ -1,37 +1,38 @@
 var Registration = require('../libs/registration');
-//var db = require('secondthought');
 var mongoose = require('mongoose');
 var config = require('./config');
 assert = require('assert');
 var Authentication = require('../libs/authentication');
 var should = require('should');
+UserModel = require('../schemas/user');
 
 describe('Authentication', function() {
 
     var reg = {};
     var auth = {};
     before(function(done) {
+        if (mongoose.connection.readyState==1) {
+            done();
+        }
         mongoose.connect(config.storage.database, function (err, res) {
             if (err) {
                 console.log ('ERROR connecting to: ' + config.storage.database + '. ' + err);
             } else {
                 console.log ('Succeeded connected to: ' + config.storage.database);
+                reg = new Registration();
+                auth = new Authentication();
+                UserModel.remove({}, function () {
+                    reg.applyForMembership({email: 'test@test.com', password: 'password', confirm: 'password'},
+                        function(err, regResult) {
+                            assert.ok(regResult.success);
+                            done();
+                        }
+                    );
+                });
             }
         });
-        /*db.connect(config.connectData, function(err, db) {
-            reg = new Registration(db);
-            auth = new Authentication(db);
-            db.users.destroyAll(function(err, result) {
-                reg.applyForMembership({email: 'test@test.com', password: 'password', confirm: 'password'},
-                    function(err, regResult) {
-                        assert.ok(regResult.success);
-                        done();
-                    }
-                );
-            });
-        });*/
     });
-/*
+
     describe('a valid login', function() {
         var authResult = {};
         before(function(done) {
@@ -55,13 +56,12 @@ describe('Authentication', function() {
         it('updates the user stats', function() {
             authResult.user.signInCount.should.equal(2);
         });
-        it('updates the signOn dates', function() {
+        /*it('updates the signOn dates', function() {
             should.exist(authResult.user.lastLoginAt);
             should.exist(authResult.user.currentLoginAt);
-        });
+        });*/
     });
-    */
-/*
+
     describe('empty email', function() {
         var authResult = {};
         before(function(done) {
@@ -80,8 +80,7 @@ describe('Authentication', function() {
             authResult.message.should.equal('Invalid email or password');
         });
     });
-    */
-/*
+
     describe('empty password', function() {
         var authResult = {};
         before(function(done) {
@@ -100,8 +99,7 @@ describe('Authentication', function() {
             authResult.message.should.equal('Invalid email or password');
         });
     });
-    */
-/*
+
     describe('password does not match', function() {
         var authResult = {};
         before(function(done) {
@@ -120,8 +118,7 @@ describe('Authentication', function() {
             authResult.message.should.equal('Invalid email or password');
         });
     });
-    */
-/*
+
     describe('email not found', function() {
         var authResult = {};
         before(function(done) {
@@ -140,5 +137,5 @@ describe('Authentication', function() {
             authResult.message.should.equal('Invalid email or password');
         });
     });
-    */
+
 });
