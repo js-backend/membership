@@ -1,3 +1,3 @@
-[![Build Status](https://travis-ci.org/mazhekin/membership.svg?branch=master)](https://travis-ci.org/mazhekin/membership)
+[![Build Status](https://travis-ci.org/js-backend/membership.svg?branch=master)](https://travis-ci.org/js-backend/membership)
 
 # Membership module
