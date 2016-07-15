@@ -30,11 +30,18 @@ describe('Main API', function() {
             });
         });
 
-        /*it('gets by token', function(done) {
-            membership.findUserByToken(newUser.authenticationToken, function(err, result) {
+        it('gets by token', function(done) {
+            membership.findUserById(newUser.id, function(err, result) {
                 result.should.be.defined;
                 done();
             });
-        });*/
+        });
+
+        it('gets users', function(done) {
+            membership.getUsers(1, 3, function(err, results) {
+                results.should.be.defined;
+                done()
+            });
+        });
     });
 });

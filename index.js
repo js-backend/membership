@@ -12,6 +12,7 @@ var Membership = function (connectData) {
     var connectDb = function(database, success) {
         if (mongoose.connection.readyState == 1) {
             success();
+            return;
         }
         mongoose.connect(database, function (err, res) {
             if (err) {
@@ -49,17 +50,27 @@ var Membership = function (connectData) {
         });
     };
 
-    var findUserByToken = function(token, next) {
+    var findUserById = function(id, next) {
         connectDb(connectData, function() {
-            assert.ok(err === null, err);
-            UserModel.findOne({authenticationToken: token}, next);
+            UserModel.findById(id, next);
+        });
+    };
+
+    var getUsers = function(page, pageSize, next) {
+        connectDb(connectData, function() {
+            params = {};
+            var query = UserModel.find(params);
+            query.skip(page - 1);
+            query.limit(pageSize);
+            query.exec(next);
         });
     };
 
     return {
         authenticate: authenticate,
         register: register,
-        findUserByToken: findUserByToken
+        findUserById: findUserById,
+        getUsers: getUsers
     }
 };
 
