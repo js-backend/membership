@@ -30,7 +30,7 @@ describe('Main API', function() {
             });
         });
 
-        it('gets by token', function(done) {
+        it('gets by id', function(done) {
             membership.findUserById(newUser.id, function(err, result) {
                 result.should.be.defined;
                 done();
